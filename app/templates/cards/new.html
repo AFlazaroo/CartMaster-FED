@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Nueva Tarjeta - CartMaster{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Agregar Nueva Tarjeta</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="numero" class="form-label">Número de Tarjeta</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="numero" 
+                                   name="numero" 
+                                   required 
+                                   pattern="[0-9]{16}" 
+                                   maxlength="16"
+                                   placeholder="1234567890123456">
+                            <div class="form-text">Ingrese los 16 dígitos de la tarjeta sin espacios.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fecha_vencimiento" class="form-label">Fecha de Vencimiento</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="fecha_vencimiento" 
+                                   name="fecha_vencimiento" 
+                                   required 
+                                   pattern="(0[1-9]|1[0-2])/20[2-9][0-9]"
+                                   placeholder="MM/YYYY">
+                            <div class="form-text">Formato: MM/YYYY (ejemplo: 12/2025)</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="franquicia" class="form-label">Franquicia</label>
+                            <select class="form-select" id="franquicia" name="franquicia" required>
+                                <option value="">Seleccione una franquicia</option>
+                                <option value="VISA">VISA</option>
+                                <option value="MASTERCARD">MASTERCARD</option>
+                                <option value="AMERICAN_EXPRESS">AMERICAN EXPRESS</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="cupo_total" class="form-label">Cupo Total</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="cupo_total" 
+                                       name="cupo_total" 
+                                       required 
+                                       min="100000"
+                                       step="100000"
+                                       placeholder="1000000">
+                            </div>
+                            <div class="form-text">Monto mínimo: $100,000</div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-credit-card me-2"></i>
+                                Agregar Tarjeta
+                            </button>
+                            <a href="{{ url_for('client.dashboard') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Volver al Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Formatear automáticamente la fecha de vencimiento
+    const fechaInput = document.getElementById('fecha_vencimiento');
+    fechaInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+            value = value.slice(0,2) + '/' + value.slice(2);
+        }
+        e.target.value = value;
+    });
+
+    // Formatear automáticamente el número de tarjeta
+    const numeroInput = document.getElementById('numero');
+    numeroInput.addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/\D/g, '').slice(0, 16);
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 
