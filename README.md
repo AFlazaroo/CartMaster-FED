@@ -5,6 +5,114 @@ Gestión financiera de clientes, desarrollado con Flask. Permite la interacción
 
 Sistema de gestión de tarjetas de crédito desarrollado con Flask. Esta aplicación frontend proporciona una interfaz de usuario intuitiva y segura para interactuar con el backend CartMaster (Spring Boot), permitiendo una gestión completa del ciclo de vida de tarjetas de crédito.
 
+
+SCRIPT BD MYSQL:
+
+CREATE DATABASE IF NOT EXISTS cartmaster;
+USE cartmaster;
+
+-- Tabla: administrador
+CREATE TABLE administrador (
+    administrador_id INT AUTO_INCREMENT PRIMARY KEY,
+    administrador_correo VARCHAR(100) NOT NULL UNIQUE,
+    administrador_contrasena VARCHAR(100) NOT NULL
+);
+
+-- Tabla: cliente
+CREATE TABLE cliente (
+    cliente_id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_nombre VARCHAR(100) NOT NULL,
+    cliente_correo VARCHAR(100) NOT NULL UNIQUE,
+    cliente_contrasena VARCHAR(100) NOT NULL
+);
+
+-- Tabla: tarjeta
+CREATE TABLE tarjeta (
+    tarjeta_id INT AUTO_INCREMENT PRIMARY KEY,
+    tarjeta_numero VARCHAR(16) NOT NULL UNIQUE,
+    tarjeta_fecha_vencimiento VARCHAR(7) NOT NULL,
+    tarjeta_franquicia VARCHAR(20) NOT NULL,
+    tarjeta_estado VARCHAR(10) NOT NULL DEFAULT 'ACTIVO',
+    tarjeta_cupo_total DECIMAL(10,2) NOT NULL,
+    tarjeta_cupo_disponible DECIMAL(10,2) NOT NULL,
+    tarjeta_cupo_utilizado DECIMAL(10,2) GENERATED ALWAYS AS (tarjeta_cupo_total - tarjeta_cupo_disponible) STORED,
+    cliente_id INT NOT NULL,
+    FOREIGN KEY (cliente_id) REFERENCES cliente(cliente_id)
+);
+
+SHOW TABLES;
+
+-- Consulta los datos de la tabla administrador
+SELECT * FROM administrador;
+
+-- Consulta los datos de la tabla cliente
+SELECT * FROM cliente;
+
+-- Consulta los datos de la tabla tarjeta
+SELECT * FROM tarjeta;
+
+-- Insertar un dato de prueba para administrador
+INSERT INTO administrador (administrador_correo, administrador_contrasena)
+VALUES ('admin@banco.com', 'admin123');
+
+-- Inserta un dato en la tabla cliente
+INSERT INTO cliente (cliente_nombre, cliente_correo, cliente_contrasena)
+VALUES ('Juan Pérez', 'juan@correo.com', 'cliente123');
+
+-- Inserta un dato en la tabla tarjeta
+INSERT INTO tarjeta (
+    tarjeta_numero,
+    tarjeta_fecha_vencimiento,
+    tarjeta_franquicia,
+    tarjeta_estado,
+    tarjeta_cupo_total,
+    tarjeta_cupo_disponible,
+    cliente_id
+) VALUES (
+    '4111111111111111',
+    '12/2027',
+    'VISA',
+    'ACTIVO',
+    5000.00,
+    2000.00,
+    1
+);
+
+INSERT INTO tarjeta (
+    tarjeta_numero,
+    tarjeta_fecha_vencimiento,
+    tarjeta_franquicia,
+    tarjeta_estado,
+    tarjeta_cupo_total,
+    tarjeta_cupo_disponible,
+    cliente_id
+) VALUES (
+    '5500000000000004',
+    '06/2028',
+    'MASTERCARD',
+    'ACTIVO',
+    8000.00,
+    6000.00,
+    1
+);
+
+
+select * from administrador;
+select * from cliente;
+select * from tarjeta;
+
+
+-- Actualizar la tarjeta con tarjeta_id = 1 para que esté vinculada al cliente_id = 2
+UPDATE tarjeta
+SET cliente_id = 2
+WHERE tarjeta_id = 1;
+
+-- Actualizar la tarjeta con tarjeta_id = 3 para que esté vinculada al cliente_id = 3
+UPDATE tarjeta
+SET cliente_id = 3
+WHERE tarjeta_id = 3;
+
+
 ## 🚀 Características Principales
 
 - **Autenticación Robusta**
